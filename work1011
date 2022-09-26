@@ -1,0 +1,156 @@
+#include <iostream>
+#include<string>
+
+using namespace std;
+
+#define MAX 1000
+struct Goods{                                           //物品结构体
+    string name;
+    string owner;
+    string phone_number;
+};
+
+struct arrayGoods{                                      //物品清单结构体
+    struct Goods goods[MAX];
+    int num;
+};
+
+void mean(){                                            //菜单栏
+
+    cout << "***************************" << endl;
+    cout << "****疫情互助物品交换系统***" << endl;
+    cout << "*******1、添加物品*********" << endl;
+    cout << "*******2、删除物品*********" << endl;
+    cout << "*******3、显示物品列表*****" << endl;
+    cout << "*******4、查找物品信息*****" << endl;
+    cout << "*******0、退出系统*********" << endl;
+    cout << "****************************" << endl;
+
+}
+
+int outSystem(){                                        //退出系统
+    cout<<"欢迎下次使用"<<endl;
+    return 0;
+}
+
+int isExist(arrayGoods *aG, string name){              //判断物品是否在物品清单中存在
+    for(int i=0; i < aG->num; i++){
+        if(aG->goods[i].name == name){
+            return i;
+        }
+    }
+    return -1;
+}
+
+void addGoods(arrayGoods *aG){                          //添加物品
+    if(aG->num >= MAX){
+        cout<<"当前物品列表已满，请删除已取出物品后再进行添加"<<endl;
+    }
+    else{
+        string name;
+        cout<<"请输入物品名称"<<endl;
+        cin>>name;
+        aG->goods[aG->num].name=name;
+
+        int flag = isExist(aG,name);                //判断添加的物品是否已经存在
+        if(flag == -1){
+            string owner;
+        cout<<"请输入物主姓名"<<endl;
+        cin>>owner;
+        aG->goods[aG->num].owner=owner;
+
+        string phone_number;
+        cout<<"请输入物主联系方式"<<endl;
+        cin>>phone_number;
+        aG->goods[aG->num].phone_number=phone_number;
+
+        aG->num++;
+
+        cout<<"添加成功"<<endl;
+        }
+        else{
+            cout<<"同类物品已存在"<<endl;
+        }
+    }
+}
+
+void deleteGoods(arrayGoods *aG){                   //删除物品
+    cout<<"请输入你要删除的物品"<<endl;
+    string name;
+    cin>>name;
+
+    int flag = isExist(aG,name);
+    if(flag != -1){
+        for(int i= 0;i+flag < aG->num; ++i){
+            aG->goods[flag+i].name=aG->goods[flag+i+1].name;
+            aG->goods[flag+i].owner=aG->goods[flag+i+1].owner;
+            aG->goods[flag+i].phone_number=aG->goods[flag+i+1].phone_number;
+            aG->num--;
+        }
+        cout<<"删除成功"<<endl;
+    }else{
+        cout<<"查无此物"<<endl;
+    }
+}
+
+void showGoods(arrayGoods *aG){                     //展示物品清单
+    if(aG->num == 0){
+        cout<<"物品清单为空"<<endl;
+    }
+    else{
+        for(int i = 0; i < aG->num; ++i){
+            cout<<"物品名称: "<<aG->goods[i].name<<"\t";
+            cout<<"物品主人: "<<aG->goods[i].owner<<"\t";
+            cout<<"联系方式: "<<aG->goods[i].phone_number<<endl;
+        }
+    }
+}
+
+void checkGoods(arrayGoods *aG){                    //查找物品
+    cout<<"请输入你要查找的物品名称"<<endl;
+    string name;
+    cin>>name;
+
+    int flag = isExist(aG,name);
+    if(flag != -1){
+        cout<<"物品名称: "<<aG->goods[flag].name<<"\t";
+        cout<<"物品主人: "<<aG->goods[flag].owner<<"\t";
+        cout<<"联系方式: "<<aG->goods[flag].phone_number<<endl;
+    }else{
+        cout<<"查无此物"<<endl;
+    }
+}
+
+
+int main()
+{
+    int x;
+    arrayGoods aG;
+    aG.num=0;
+
+    while(true){
+        mean();
+        cin>>x;
+        switch(x){
+            case 1:
+                addGoods(&aG);
+                break;
+            case 2:
+                deleteGoods(&aG);
+                break;
+            case 3:
+                showGoods(&aG);
+                break;
+            case 4:
+                checkGoods(&aG);
+                break;
+            case 0:
+                outSystem();
+                break;
+
+        }
+
+    }
+
+    return 0;
+}
